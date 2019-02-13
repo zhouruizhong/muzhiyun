@@ -1,8 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto" xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@mipmap/index">
+        android:layout_height="match_parent">
 
+    <ImageView
+            android:layout_width="319dp"
+            android:layout_height="332dp"
+            app:srcCompat="@mipmap/muzhiyun"
+            android:id="@+id/imageView"
+    />
+    <ImageView
+            android:layout_width="320dp"
+            android:layout_height="118dp"
+            app:srcCompat="@mipmap/pandian"
+            tools:layout_editor_absoluteY="285dp"
+            android:id="@+id/inventory" />
+    <ImageView
+            android:layout_width="322dp"
+            android:layout_height="116dp"
+            app:srcCompat="@mipmap/clean"
+            tools:layout_editor_absoluteY="402dp"
+            android:id="@+id/clearCache"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.523"
+    />
 </android.support.constraint.ConstraintLayout>

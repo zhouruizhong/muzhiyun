@@ -32,7 +32,7 @@ public interface RetrofitService {
      * @param uuid 初始化服务器返回的uuid
      */
     @GET("external/login/checkLogin")
-    LoginResp checkLogin(String uuid);
+    Observable<LoginResp> checkLogin(String uuid);
 
     @POST("api/stocking/rfidAdd")
     void rfidAdd();

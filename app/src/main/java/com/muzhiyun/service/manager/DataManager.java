@@ -1,11 +1,13 @@
 package com.muzhiyun.service.manager;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
+import android.util.Log;
 import com.muzhiyun.service.RetrofitHelper;
 import com.muzhiyun.service.RetrofitService;
 import com.muzhiyun.service.entity.Goods;
+import com.muzhiyun.service.entity.LoginResp;
 import com.muzhiyun.service.entity.Uuid;
-import retrofit2.Call;
 import rx.Observable;
 
 /**
@@ -13,9 +15,14 @@ import rx.Observable;
  */
 public class DataManager {
 
+    private static final String TAG = "Rxjava";
+
+    // 设置变量 = 模拟轮询服务器次数
+    private int i = 0 ;
+
     private RetrofitService mRetrofitService;
 
-    public void init(){
+    public void init() {
 
     }
 
@@ -27,11 +34,15 @@ public class DataManager {
         return mRetrofitService.getSearchGoods(name, tag, start, count);
     }
 
-    public Observable<Uuid> getUuid(){
+    public Observable<Uuid> getUuid() {
         return mRetrofitService.getUuid();
     }
 
-    public Observable<String> getQrcode(String uuid){
+    public Observable<String> getQrcode(String uuid) {
         return mRetrofitService.generateQrcode(uuid);
+    }
+
+    public Observable<LoginResp> checkLogin(String uuid) {
+        return mRetrofitService.checkLogin(uuid);
     }
 }
