@@ -12,8 +12,11 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.ImageView;
 import android.widget.Toast;
+import com.muzhiyun.service.entity.LoginResp;
 import com.muzhiyun.service.entity.Uuid;
 import com.muzhiyun.service.presenter.InitPresenter;
+import com.muzhiyun.service.presenter.LoginPresenter;
+import com.muzhiyun.service.view.LoginRespView;
 import com.muzhiyun.service.view.UuidView;
 
 import java.io.IOException;
@@ -22,32 +25,52 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+/**
+ * @author zhouruizhong
+ */
 public class MainActivity extends AppCompatActivity {
 
     private ImageView qrCode;
+    private LoginPresenter loginPresenter = new LoginPresenter(this);
     private InitPresenter initPresenter = new InitPresenter(this);
     private String uuid;
-    private final String url = "";
+
+    private static final String TAG = "Rxjava";
 
     @SuppressLint("NewApi")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        // 二维码显示区
         qrCode = findViewById(R.id.qrCode);
-        initPresenter.onCreate();
-        initPresenter.attachView(mUuidView);
 
-        //
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
+        initPresenter.onCreate();
+        initPresenter.attachView(mUuidView);
         // 获取uuid 加载登录二维码
         initPresenter.getUuid();
-        // 轮询验证登录
-        // initPresenter.checkLogin(uuid);
 
     }
+
+    private LoginRespView mLoginRespView = new LoginRespView() {
+        @Override
+        public void onSuccess(LoginResp mLoginResp) {
+            String code = "200";
+            if (code.equals(mLoginResp.getCode())){
+                Intent intent = new Intent(MainActivity.this, IndexActivity.class);
+                startActivity(intent);
+                loginPresenter.onStop();
+            }
+        }
+
+        @Override
+        public void onError(String result) {
+            Toast.makeText(MainActivity.this, "抱歉：" + result, Toast.LENGTH_LONG).show();
+        }
+    };
 
     private UuidView mUuidView = new UuidView() {
         @Override
@@ -57,13 +80,20 @@ public class MainActivity extends AppCompatActivity {
             // 开启一个子线程，进行网络操作，等待有返回结果，使用handler通知UI
             new Thread(networkTask).start();
 
-            //Intent intent = new Intent(MainActivity.this, IndexActivity.class);
-            //startActivity(intent);
+            try{
+                Thread.sleep(10000);
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+
+            loginPresenter.onCreate();
+            loginPresenter.attachView(mLoginRespView);
+            loginPresenter.checkLogin(uuid);
         }
 
         @Override
         public void onError(String result) {
-            Toast.makeText(MainActivity.this, result, Toast.LENGTH_SHORT).show();
+            Toast.makeText(MainActivity.this, "抱歉：" + result, Toast.LENGTH_SHORT).show();
         }
     };
 

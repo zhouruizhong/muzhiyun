@@ -3,7 +3,6 @@ package com.muzhiyun.service;
 import com.muzhiyun.service.entity.Goods;
 import com.muzhiyun.service.entity.LoginResp;
 import com.muzhiyun.service.entity.Uuid;
-import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
@@ -30,9 +29,10 @@ public interface RetrofitService {
     /**
      * 验证是否登录成功
      * @param uuid 初始化服务器返回的uuid
+     * @return 登录信息
      */
     @GET("external/login/checkLogin")
-    Observable<LoginResp> checkLogin(String uuid);
+    Observable<LoginResp> checkLogin(@Query("uuid") String uuid);
 
     @POST("api/stocking/rfidAdd")
     void rfidAdd();

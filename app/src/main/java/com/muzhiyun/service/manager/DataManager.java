@@ -1,8 +1,6 @@
 package com.muzhiyun.service.manager;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
-import android.util.Log;
 import com.muzhiyun.service.RetrofitHelper;
 import com.muzhiyun.service.RetrofitService;
 import com.muzhiyun.service.entity.Goods;

@@ -2,24 +2,33 @@ package com.muzhiyun.service.presenter;
 
 import android.content.Context;
 import android.content.Intent;
-import com.muzhiyun.service.entity.Goods;
+import com.muzhiyun.service.entity.LoginResp;
+import com.muzhiyun.service.entity.Uuid;
 import com.muzhiyun.service.manager.DataManager;
-import com.muzhiyun.service.view.GoodsView;
+import com.muzhiyun.service.view.LoginRespView;
 import com.muzhiyun.service.view.View;
+import rx.Observable;
 import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
-public class GoodsPresenter implements Presenter {
+import java.util.concurrent.TimeUnit;
+
+/**
+ * @author zhouruizhong
+ */
+public class LoginPresenter implements Presenter {
 
     private DataManager manager;
     private CompositeSubscription mCompositeSubscription;
     private Context mContext;
-    private GoodsView mGoodsView;
-    private Goods mGoods;
+    private LoginResp mLoginResp;
+    private LoginRespView mLoginRespView;
 
-    public GoodsPresenter(Context mContext) {
+    private static final String TAG = "Rxjava";
+
+    public LoginPresenter(Context mContext){
         this.mContext = mContext;
     }
 
@@ -48,37 +57,38 @@ public class GoodsPresenter implements Presenter {
 
     @Override
     public void attachView(View view) {
-        mGoodsView = (GoodsView) view;
+        mLoginRespView = (LoginRespView)view;
     }
 
     @Override
     public void attachIncomingIntent(Intent intent) {
+
     }
 
-    public void getSearchBooks(String name, String tag, int start, int count) {
-        mCompositeSubscription.add(manager.getSearchGoods(name, tag, start, count)
+    public void checkLogin(String uuid) {
+        mCompositeSubscription.add(manager.checkLogin(uuid)
+                .repeat(100)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<Goods>() {
+                .subscribe(new Observer<LoginResp>() {
                     @Override
                     public void onCompleted() {
-                        if (mGoods != null) {
-                            mGoodsView.onSuccess(mGoods);
+                        if (mLoginResp != null) {
+                            mLoginRespView.onSuccess(mLoginResp);
                         }
                     }
 
                     @Override
                     public void onError(Throwable e) {
                         e.printStackTrace();
-                        mGoodsView.onError("请求失败！！");
+                        mLoginRespView.onError("请求失败！！");
                     }
 
                     @Override
-                    public void onNext(Goods goods) {
-                        mGoods = goods;
+                    public void onNext(LoginResp loginResp) {
+                        mLoginResp = loginResp;
                     }
                 })
         );
     }
-
 }
